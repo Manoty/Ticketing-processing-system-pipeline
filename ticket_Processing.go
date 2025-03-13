@@ -30,6 +30,7 @@ func placeOrder() <-chan ticketOrder{
 //Order Validation
 func validateOrder(in <-chan ticketOrder) <-chan ticketOrder{
 	out := make(chan ticketOrder)
+	totalTickets := 10
 	go func(){
 		for order := range in{
 			if order.ticketRequested <= totalTickets{
@@ -56,4 +57,13 @@ func confirmOrders(in <-chan ticketOrder){
 			fmt.Printf("order rejected: %s's requestn for %d tickets was denied\n", order.customerName, order.ticketRequested)
 		}
 	}
+}
+
+//connect to pipeline in main
+func main(){
+	fmt.Println("starting ticket Booking system...")
+	orders := placeOrder()//stage 1:place orders
+	validateOrders := validateOrder(orders)//stage 2: validate orders
+	confirmOrders(validateOrders)//stage 3: confirm orders and send tickets
+	fmt.Println("\n ticket processing complete!")
 }
