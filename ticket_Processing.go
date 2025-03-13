@@ -47,3 +47,13 @@ func validateOrder(in <-chan ticketOrder) <-chan ticketOrder{
 	return out
 			
 }
+//order confirmation and ticket sending
+func confirmOrders(in <-chan ticketOrder){
+	for order := range in{
+		if order.orderStatus == "Valid"{
+			fmt.Printf("Ticket confirmed: %sreceived, %d tickets sent\n", order.customerName, order.ticketRequested)
+		}else{
+			fmt.Printf("order rejected: %s's requestn for %d tickets was denied\n", order.customerName, order.ticketRequested)
+		}
+	}
+}
